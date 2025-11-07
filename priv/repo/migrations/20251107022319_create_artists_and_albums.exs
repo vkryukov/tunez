@@ -1,4 +1,4 @@
-defmodule Tunez.Repo.Migrations.CreateAlbums do
+defmodule Tunez.Repo.Migrations.CreateArtistsAndAlbums do
   @moduledoc """
   Updates resources based on their most recent snapshots.
 
@@ -8,6 +8,20 @@ defmodule Tunez.Repo.Migrations.CreateAlbums do
   use Ecto.Migration
 
   def up do
+    create table(:artists, primary_key: false) do
+      add :id, :uuid, null: false, default: fragment("gen_random_uuid()"), primary_key: true
+      add :name, :text, null: false
+      add :biography, :text
+
+      add :inserted_at, :utc_datetime_usec,
+        null: false,
+        default: fragment("(now() AT TIME ZONE 'utc')")
+
+      add :updated_at, :utc_datetime_usec,
+        null: false,
+        default: fragment("(now() AT TIME ZONE 'utc')")
+    end
+
     create table(:albums, primary_key: false) do
       add :id, :uuid, null: false, default: fragment("gen_random_uuid()"), primary_key: true
       add :name, :text, null: false
@@ -40,5 +54,7 @@ defmodule Tunez.Repo.Migrations.CreateAlbums do
     drop constraint(:albums, "albums_artist_id_fkey")
 
     drop table(:albums)
+
+    drop table(:artists)
   end
 end
