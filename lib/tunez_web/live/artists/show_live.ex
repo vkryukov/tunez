@@ -34,7 +34,7 @@ defmodule TunezWeb.Artists.ShowLive do
         <:subtitle :if={@artist.previous_names != []}>
           formerly known as: {Enum.join(@artist.previous_names, ", ")}
         </:subtitle>
-        <:action>
+        <:action :if={Tunez.Music.can_destroy_artist?(@current_user, @artist)}>
           <.button_link
             kind="error"
             inverse
@@ -44,7 +44,7 @@ defmodule TunezWeb.Artists.ShowLive do
             Delete Artist
           </.button_link>
         </:action>
-        <:action>
+        <:action :if={Tunez.Music.can_update_artist?(@current_user, @artist)}>
           <.button_link navigate={~p"/artists/#{@artist.id}/edit"} kind="primary" inverse>
             Edit Artist
           </.button_link>
@@ -58,7 +58,7 @@ defmodule TunezWeb.Artists.ShowLive do
 
       <ul class="mt-10 space-y-6 md:space-y-10">
         <li :for={album <- @artist.albums}>
-          <.album_details album={album} />
+          <.album_details album={album} current_user={@current_user} />
         </li>
       </ul>
     </Layouts.app>
@@ -76,7 +76,7 @@ defmodule TunezWeb.Artists.ShowLive do
           <.h2>
             {@album.name} ({@album.year_released})
           </.h2>
-          <:action>
+          <:action :if={Tunez.Music.can_destroy_album?(@current_user, @album)}>
             <.button_link
               size="sm"
               inverse
@@ -88,7 +88,7 @@ defmodule TunezWeb.Artists.ShowLive do
               Delete
             </.button_link>
           </:action>
-          <:action>
+          <:action :if={Tunez.Music.can_update_album?(@current_user, @album)}>
             <.button_link size="sm" kind="primary" inverse navigate={~p"/albums/#{@album.id}/edit"}>
               Edit
             </.button_link>
